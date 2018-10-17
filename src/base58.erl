@@ -157,11 +157,14 @@ check_base58(Base58) ->
 %% @spec integer_to_base58(integer()) -> 'error' | base58()
 
 -spec integer_to_base58(integer()) -> 'error' | base58().
-integer_to_base58(0) -> [];
 integer_to_base58(Integer) ->
-	Quot = Integer div 58,
-	Rem = Integer rem 58,
-	integer_to_base58(Quot) ++ [b58char(Rem)].
+    integer_to_base58(Integer, []).
+
+integer_to_base58(0, Acc) -> Acc;
+integer_to_base58(Integer, Acc) ->
+       Quot = Integer div 58,
+       Rem = Integer rem 58,
+       integer_to_base58(Quot, [b58char(Rem)|Acc]).
 
 %% @doc Convert a Base58 string into a unsigned integer value. This is an
 %% internal function that is not exposed to the user.
@@ -209,15 +212,16 @@ binary_to_base58(Binary) when is_binary(Binary) ->
 		error -> error;
 		Base58 ->
 			% see above comment - just the reverse
-			binaryPad(binary_to_list(Binary), Base58)
+			binaryPad(Binary, Base58)
 	end.
 
 %% @doc Pad a "1" character to a Base58 stream to account for any stripped zeros
 %%
 %% @spec binaryPad(list(), base58())
-binaryPad([0 | Rest], Bin) ->
-	binaryPad(Rest, "1" ++ Bin);
-binaryPad(_, Bin) -> Bin.
+binaryPad(<<0:8, Rest/binary>>, Base58) ->
+	binaryPad(Rest, "1" ++ Base58);
+binaryPad(_, Base58) -> Base58.
+
 
 %% @doc Pad a zero byte to a Base58 stream to account for any leading 1's
 %%
