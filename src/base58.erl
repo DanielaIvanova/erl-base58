@@ -195,7 +195,10 @@ base58_to_integer([Char | Str]) ->
 
 -spec base58_to_binary(base58()) -> binary().
 base58_to_binary(Base58) ->
-	Bin = binary:encode_unsigned(base58_to_integer(Base58)),
+	Bin = case base58_to_integer(Base58) of
+                0 -> <<>>; %% Will be padded below
+                N -> binary:encode_unsigned(N)
+              end,
 	%The conversion between the binary and the integer strips any leading zero bytes that 
 	% might have appeared in the binary - '0's' should be prepended to the binary stream for each
 	% 1 that appeared at the start of the base58 string.
