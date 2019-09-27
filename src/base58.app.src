@@ -1,11 +1,13 @@
 {application, base58,
  [
+  {pkg_name, "ae_erl_base58"},
   {description, "A simple Erlang module to perform Base58 encoding and decoding"},
-  {vsn, "0.0.1"},
+  {vsn, "0.0.2"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {env, []}
+  {env, []},
+  {licenses,["MIT","ISC"]}
  ]}.
